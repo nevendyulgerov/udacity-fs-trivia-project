@@ -5,6 +5,7 @@
       <w>postgresql</w>
       <w>sqlalchemy</w>
       <w>tablename</w>
+      <w>unprocessable</w>
     </words>
   </dictionary>
 </component>

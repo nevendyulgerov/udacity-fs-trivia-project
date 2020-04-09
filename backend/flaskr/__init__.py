@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, request, abort, jsonify, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import random
@@ -12,7 +12,7 @@ QUESTIONS_PER_PAGE = 10
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
-    setup_db(app)
+    db = setup_db(app)
 
     '''
     Set up CORS. Allow '*' for origins.
@@ -20,9 +20,8 @@ def create_app(test_config=None):
     cors = CORS(app, resources={r'/api/*': {'origins': '*'}})
 
     '''
-    @TODO: Use the after_request decorator to set Access-Control-Allow
+    Use the after_request decorator to set Access-Control-Allow
     '''
-
     @app.after_request
     def after_request(response):
         response.headers.add('Access-Control-Allow-Headers', 'Content-Type, Authorization')
@@ -34,6 +33,19 @@ def create_app(test_config=None):
     Create an endpoint to handle GET requests 
     for all available categories.
     '''
+    @app.route('/api/v1/categories')
+    def get_categories():
+        try:
+            body = {}
+            for category in Category.query.all():
+                body[category.id] = category.type
+
+            return jsonify({
+                'success': True,
+                'categories': body
+            })
+        except:
+            abort(404)
 
     '''
     @TODO: 
@@ -49,12 +61,23 @@ def create_app(test_config=None):
     '''
     @app.route('/api/v1/questions')
     def get_questions():
-        return jsonify({
-            'questions': [],
-            'totalQuestions': 0,
-            'categories': [],
-            'currentCategory': {}
-        })
+        try:
+            questions = Question.query.all()
+            formatted_questions = [question.format() for question in questions]
+
+            categories = Category.query.all()
+            formatted_categories = {}
+            for category in categories:
+                formatted_categories[category.id] = category.type
+
+            return jsonify({
+                'questions': formatted_questions,
+                'totalQuestions': len(formatted_questions),
+                'categories': formatted_categories,
+                'currentCategory': {}
+            })
+        except:
+            abort(404)
 
     '''
     @TODO: 
@@ -74,6 +97,27 @@ def create_app(test_config=None):
     the form will clear and the question will appear at the end of the last page
     of the questions list in the "List" tab.  
     '''
+    @app.route('/api/v1/questions', methods=['POST'])
+    def create_question():
+        try:
+            request_body = request.json
+            question = Question(
+                request_body['question'],
+                request_body['answer'],
+                request_body['category'],
+                request_body['difficulty']
+            )
+            question.insert()
+
+            return jsonify({
+                'success': True
+            })
+        except:
+            db.session.rollback()
+            abort(500)
+        finally:
+            db.session.close()
+
 
     '''
     @TODO: 
@@ -108,9 +152,47 @@ def create_app(test_config=None):
     '''
 
     '''
-    @TODO: 
     Create error handlers for all expected errors 
     including 404 and 422. 
     '''
+    @app.errorhandler(400)
+    def bad_request():
+        return jsonify({
+            'success': False,
+            'error': 400,
+            'message': 'Bad request'
+        })
+
+    @app.errorhandler(404)
+    def not_found():
+        return jsonify({
+            'success': False,
+            'error': 404,
+            'message': 'Not found'
+        }), 404
+
+    @app.errorhandler(422)
+    def unprocessable_entity():
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': 'Unprocessable entity'
+        })
+
+    @app.errorhandler(405)
+    def method_not_allowed():
+        return jsonify({
+            'success': False,
+            'error': 405,
+            'message': 'Method not allowed'
+        })
+
+    @app.errorhandler(500)
+    def internal_server_error():
+        return jsonify({
+            'success': False,
+            'error': 500,
+            'message': 'Internal server error'
+        })
 
     return app
