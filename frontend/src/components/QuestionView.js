@@ -1,23 +1,20 @@
 import React, {Component} from 'react';
-
 import '../stylesheets/App.css';
 import Question from './Question';
 import Search from './Search';
-import $ from 'jquery';
-import { getQuestions } from '../api';
-
-const apiUrl = 'http://localhost:8000/api/v1';
+import { getQuestions, getCategoryQuestions, searchQuestions, deleteQuestion } from '../api';
 
 class QuestionView extends Component {
     constructor() {
         super();
+        this.perPage = 10;
         this.state = {
             questions: [],
             page: 1,
             totalQuestions: 0,
             categories: {},
             currentCategory: null,
-        }
+        };
     }
 
     componentDidMount() {
@@ -27,7 +24,7 @@ class QuestionView extends Component {
     getQuestions = () => {
         const { page } = this.state;
 
-        getQuestions(page)
+        getQuestions(page, this.perPage)
             .then((result) => {
                 this.setState({
                     questions: result.questions,
@@ -47,105 +44,104 @@ class QuestionView extends Component {
 
     createPagination() {
         let pageNumbers = [];
-        let maxPage = Math.ceil(this.state.totalQuestions / 10)
+        let maxPage = Math.ceil(this.state.totalQuestions / this.perPage);
+
         for (let i = 1; i <= maxPage; i++) {
             pageNumbers.push(
                 <span
                     key={i}
                     className={`page-num ${i === this.state.page ? 'active' : ''}`}
-                    onClick={() => {
-                        this.selectPage(i)
-                    }}>{i}
-        </span>)
+                    onClick={() => this.selectPage(i)}
+                >
+                    {i}
+                </span>
+            )
         }
         return pageNumbers;
     }
 
     getByCategory = (id) => {
-        $.ajax({
-            url: `/categories/${id}/questions`, //TODO: update request URL
-            type: "GET",
-            success: (result) => {
+        getCategoryQuestions(id)
+            .then((result) => {
                 this.setState({
                     questions: result.questions,
                     totalQuestions: result.total_questions,
                     currentCategory: result.current_category
                 })
-                return;
-            },
-            error: (error) => {
+            })
+            .catch(() => {
                 alert('Unable to load questions. Please try your request again')
-                return;
-            }
-        })
-    }
+            });
+    };
 
     submitSearch = (searchTerm) => {
-        $.ajax({
-            url: `/questions`, //TODO: update request URL
-            type: "POST",
-            dataType: 'json',
-            contentType: 'application/json',
-            data: JSON.stringify({searchTerm: searchTerm}),
-            xhrFields: {
-                withCredentials: true
-            },
-            crossDomain: true,
-            success: (result) => {
+        searchQuestions(searchTerm)
+            .then((result) => {
                 this.setState({
                     questions: result.questions,
                     totalQuestions: result.total_questions,
                     currentCategory: result.current_category
                 })
-                return;
-            },
-            error: (error) => {
+            })
+            .catch(() => {
                 alert('Unable to load questions. Please try your request again')
-                return;
-            }
-        })
-    }
+            });
+    };
 
     questionAction = (id) => (action) => {
-        if (action === 'DELETE') {
-            if (window.confirm('are you sure you want to delete the question?')) {
-                $.ajax({
-                    url: `/questions/${id}`, //TODO: update request URL
-                    type: "DELETE",
-                    success: (result) => {
-                        this.getQuestions();
-                    },
-                    error: (error) => {
-                        alert('Unable to load questions. Please try your request again')
-                        return;
-                    }
-                })
-            }
+        if (action === 'DELETE' && window.confirm('are you sure you want to delete the question?')) {
+            deleteQuestion(id)
+                .then(() => this.onDeleteQuestion(id))
+                .catch(() => {
+                    alert('Unable to load questions. Please try your request again')
+                });
         }
-    }
+    };
+
+    onDeleteQuestion = (id) => {
+        const { page, questions } = this.state;
+        const remainingQuestions = questions.filter((question) => question.id !== id);
+        // use the same page if there are some remaining questions or this is the first page, otherwise use the previous page
+        const nextPage = remainingQuestions.length > 0 || page - 1 < 0
+            ? page
+            : page - 1;
+
+        this.setState({
+            page: nextPage
+        }, () => this.getQuestions())
+    };
 
     render() {
         return (
             <div className="question-view">
                 <div className="categories-list">
-                    <h2 onClick={() => {
-                        this.getQuestions()
-                    }}>Categories</h2>
+                    <h2 onClick={this.getQuestions}>
+                        Categories
+                    </h2>
+
                     <ul>
                         {Object.keys(this.state.categories).map((id,) => (
-                            <li key={id} onClick={() => {
-                                this.getByCategory(id)
-                            }}>
+                            <li
+                                key={id}
+                                onClick={() => this.getByCategory(id)}
+                            >
                                 {this.state.categories[id]}
-                                <img className="category" src={`${this.state.categories[id]}.svg`}/>
+
+                                <img
+                                    className="category"
+                                    src={`${this.state.categories[id]}.svg`}
+                                />
                             </li>
                         ))}
                     </ul>
+
                     <Search submitSearch={this.submitSearch}/>
                 </div>
+
                 <div className="questions-list">
                     <h2>Questions</h2>
-                    {this.state.questions.map((q, ind) => (
+
+                    {this.state.questions.map((q) => (
                         <Question
                             key={q.id}
                             question={q.question}
@@ -155,11 +151,11 @@ class QuestionView extends Component {
                             questionAction={this.questionAction(q.id)}
                         />
                     ))}
+
                     <div className="pagination-menu">
                         {this.createPagination()}
                     </div>
                 </div>
-
             </div>
         );
     }
