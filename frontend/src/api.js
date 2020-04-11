@@ -106,7 +106,7 @@ export const getCategoryQuestions = (categoryId) => {
     });
 };
 
-export const playQuiz = (category, previousQuestions = []) => {
+export const playQuiz = (category = null, previousQuestions = []) => {
     return new Promise((resolve, reject) => {
         $.ajax({
             url: `${apiUrl}/quizzes`,
