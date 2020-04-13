@@ -1,4 +1,3 @@
-import os
 import unittest
 import json
 import collections
@@ -11,6 +10,7 @@ from models import setup_db, Question, Category
 
 def get_current_time(format='%Y-%m-%d %H:%S:%M'):
     return datetime.now().strftime(format)
+
 
 class TriviaTestCase(unittest.TestCase):
     """This class represents the trivia test case"""
@@ -55,11 +55,6 @@ class TriviaTestCase(unittest.TestCase):
     def tearDown(self):
         """Executed after reach test"""
         pass
-
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
 
     '''
     Test success response for get_categories

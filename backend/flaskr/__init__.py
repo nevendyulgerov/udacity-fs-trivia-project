@@ -1,7 +1,4 @@
-import os
-from flask import Flask, request, abort, jsonify, request
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func
+from flask import Flask, abort, jsonify, request
 from flask_cors import CORS
 import random
 import collections
