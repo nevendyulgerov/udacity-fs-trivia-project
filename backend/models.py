@@ -10,8 +10,6 @@ database_user = 'dbuser'
 database_pass = 'dbuser'
 database_path = "postgresql://{}:{}@{}:{}/{}".format(database_user, database_pass, database_host, database_port, database_name)
 
-# dialect://username:password@host:port/db
-
 db = SQLAlchemy()
 
 '''
@@ -86,6 +84,10 @@ class Category(db.Model):
 
     def __init__(self, type):
         self.type = type
+
+    def insert(self):
+        db.session.add(self)
+        db.session.commit()
 
     def format(self):
         return {
