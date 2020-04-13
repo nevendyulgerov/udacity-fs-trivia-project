@@ -120,7 +120,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(new_question.question, new_question_data['question'])
         self.assertEqual(new_question.answer, new_question_data['answer'])
         self.assertEqual(new_question.difficulty, new_question_data['difficulty'])
-        self.assertEqual(new_question.category, str(new_question_data['category']))
+        self.assertEqual(new_question.category, new_question_data['category'])
 
     '''
     Test error response for create_question with invalid question request data
@@ -310,7 +310,7 @@ class TriviaTestCase(unittest.TestCase):
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(data['success'], True)
-        self.assertEqual(data['question']['category'], str(category.id))
+        self.assertEqual(data['question']['category'], category.id)
 
     '''
     Test error response for play_quiz with missing request body

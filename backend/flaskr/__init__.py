@@ -235,14 +235,6 @@ def create_app(test_config=None):
             'message': 'Not found'
         }), 404
 
-    @app.errorhandler(422)
-    def unprocessable_entity(error):
-        return jsonify({
-            'success': False,
-            'error': 422,
-            'message': 'Unprocessable entity'
-        }), 422
-
     @app.errorhandler(405)
     def method_not_allowed(error):
         return jsonify({
@@ -250,6 +242,14 @@ def create_app(test_config=None):
             'error': 405,
             'message': 'Method not allowed'
         }), 405
+
+    @app.errorhandler(422)
+    def unprocessable_entity(error):
+        return jsonify({
+            'success': False,
+            'error': 422,
+            'message': 'Unprocessable entity'
+        }), 422
 
     @app.errorhandler(500)
     def internal_server_error(error):
