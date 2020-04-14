@@ -80,7 +80,6 @@ GET '/api/v1/categories/{id}/questions'
 POST '/api/v1/quizzes'
 ```
 
-
 ### GET '/api/v1/categories'
 ```
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
@@ -94,8 +93,8 @@ POST '/api/v1/quizzes'
 '6' : "Sports"}
 ```
 
+### GET '/api/v1/questions?page={page}&per_page={per_page}'
 ```
-GET '/api/v1/questions?page={page}&per_page={per_page}'
 - Fetches paginated questions. Default pagination is 10 questions per page.
 - Request Arguments:
     - page: determines the current page value (int) (optional, default=1)
@@ -110,8 +109,8 @@ GET '/api/v1/questions?page={page}&per_page={per_page}'
 }
 ```
 
+### POST '/api/v1/questions/searches?search_term={search_term}'
 ```
-POST '/api/v1/questions/searches?search_term={search_term}'
 - Fetches questions based on a search term.
 - Request Arguments:
     - search_term: determines the search term (str) (optional, default='')
@@ -124,8 +123,8 @@ POST '/api/v1/questions/searches?search_term={search_term}'
 }
 ```
 
+### POST '/api/v1/questions'
 ```
-POST '/api/v1/questions'
 - Creates a new question with required attributes for question, answer, difficulty, category
 - Request Body:
     - question: the question (str) (required)
@@ -138,8 +137,8 @@ POST '/api/v1/questions'
 }
 ```
 
+### DELETE '/api/v1/questions/{id}'
 ```
-DELETE '/api/v1/questions/{id}'
 - Deletes an existing question from the db
 - Path Variables:
     - id: the question id (int) (required)
@@ -149,8 +148,8 @@ DELETE '/api/v1/questions/{id}'
 }
 ```
 
+### GET '/api/v1/categories/{id}/questions'
 ```
-GET '/api/v1/categories/{id}/questions'
 - Fetches questions that belong to a specific category.
 - Path Variables:
     - id: the category id (int) (required)
@@ -163,8 +162,8 @@ GET '/api/v1/categories/{id}/questions'
 }
 ```
 
+### POST '/api/v1/quizzes'
 ```
-POST '/api/v1/quizzes'
 - Gets a random question to play the quiz. This endpoint takes category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
 - Request Body:
     - quiz_category: the quiz category (int) (optional, default=None)
