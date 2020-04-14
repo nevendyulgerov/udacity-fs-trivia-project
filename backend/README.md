@@ -72,8 +72,8 @@ One note before you delve into your tasks: for each endpoint you are expected to
 
 ```
 GET '/api/v1/categories'
-GET '/api/v1/questions'
-POST '/api/v1/questions/searches'
+GET '/api/v1/questions?page={page}&per_page={per_page}'
+POST '/api/v1/questions/searches?search_term={search_term}'
 POST '/api/v1/questions'
 DELETE '/api/v1/questions/{id}'
 GET '/api/v1/categories/{id}/questions'
