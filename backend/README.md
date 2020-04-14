@@ -175,6 +175,16 @@ POST '/api/v1/quizzes'
 }
 ```
 
+## API Errors
+All errors are returned in the following json format:
+```
+{
+    'success': success status (bool),
+    'error': the status code error (int),
+    'message': the error message (str)
+}
+```
+
 
 ## Testing
 To run the tests, run
