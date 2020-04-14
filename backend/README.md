@@ -149,7 +149,7 @@ DELETE '/api/v1/questions/{id}'
 
 ```
 GET '/api/v1/categories/{id}/questions'
-- Fetches paginated questions. Default pagination is 10 questions per page.
+- Fetches questions that belong to a specific category.
 - Path Variables:
     - id: the category id (int) (required)
 - Returns the success status, a list of questions, number of total questions, current category.
