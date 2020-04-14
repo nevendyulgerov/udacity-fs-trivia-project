@@ -45,7 +45,7 @@ To run the server, execute:
 ```bash
 export FLASK_APP=flaskr
 export FLASK_ENV=development
-flask run
+flask run --host='0.0.0.0' --port=8000
 ```
 
 Setting the `FLASK_ENV` variable to `development` will detect file changes and restart the server automatically.
