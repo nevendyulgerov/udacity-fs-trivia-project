@@ -32,6 +32,8 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser. T
 npm start
 ```
 
+The frontend expects that the server api is available at http://localhost:8000/api/v1. More information can be found in /src/api.js.
+
 ## Request Formatting
 
 The frontend should be fairly straightforward and digestible. You'll primarily work within the ```components``` folder in order to edit the endpoints utilized by the components. While working on your backend request handling and response formatting, you can reference the frontend to view how it parses the responses.
