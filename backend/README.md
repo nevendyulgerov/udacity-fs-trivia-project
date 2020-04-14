@@ -113,7 +113,7 @@ POST '/api/v1/questions/searches?search_term={search_term}'
 - Fetches questions based on a search term.
 - Request Arguments:
     - search_term: determines the search term (str) (optional, default='')
-- Returns the success status, any questions for whom the search term is a substring of the question
+- Returns the success status, any questions for whom the search term is a substring of the question, number of total questions, current category
 {
     'success': success status (bool),
     'questions': list of questions (collection.Iterable),
