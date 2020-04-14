@@ -70,9 +70,8 @@ One note before you delve into your tasks: for each endpoint you are expected to
 
 API Endpoints
 ```
-Endpoints
 GET '/api/v1/categories'
-GET '/api/v1/questions?page={page}&per_page={per_page}'
+GET '/api/v1/questions'
 POST '/api/v1/questions/searches'
 POST '/api/v1/questions'
 DELETE '/api/v1/questions/{id}'
@@ -94,17 +93,84 @@ GET '/api/v1/categories'
 ```
 
 ```
-GET '/api/v1/questions'
+GET '/api/v1/questions?page={page}&per_page={per_page}'
 - Fetches paginated questions. Default pagination is 10 questions per page.
 - Request Arguments:
-    - page: integer that determines the current page value
-    - per_page: integer that determines the current per page value
-- Returns a list of questions, number of total questions, current category, categories.
+    - page: determines the current page value (int) (optional, default=1)
+    - per_page: determines the current per page value (int) (optional, default=10)
+- Returns the success status, a list of questions, number of total questions, current category, categories.
 {
+    'success': success status (bool),
     'questions': list of questions (collection.Iterable),
     'total_questions': number of total questions (int),
     'categories': formatted_categories (collection.Mappable),
-    'current_category': None (collection.Mappable | None)
+    'current_category': the current category (collection.Mappable | None)
+}
+```
+
+```
+POST '/api/v1/questions/searches?search_term={search_term}'
+- Fetches questions based on a search term.
+- Request Arguments:
+    - search_term: determines the search term (str) (optional, default='')
+- Returns the success status, any questions for whom the search term is a substring of the question
+{
+    'success': success status (bool),
+    'questions': list of questions (collection.Iterable),
+    'total_questions': number of total questions (int),
+    'current_category': the current category (collection.Mappable | None)
+}
+```
+
+```
+POST '/api/v1/questions'
+- Creates a new question with required attributes for question, answer, difficulty, category
+- Request Body:
+    - question: the question (str) (required)
+    - answer: the answer (str) (required)
+    - difficulty: the difficulty (int) (required)
+    - category: the category (int) (required)
+- Returns the success status of the insert question action
+{
+    'success': success status (bool),
+}
+```
+
+```
+DELETE '/api/v1/questions/{id}'
+- Deletes an existing question from the db
+- Path Variables:
+    - id: the question id (int) (required)
+- Returns the success status of the delete question action
+{
+    'success': success status (bool),
+}
+```
+
+```
+GET '/api/v1/categories/{id}/questions'
+- Fetches paginated questions. Default pagination is 10 questions per page.
+- Path Variables:
+    - id: the category id (int) (required)
+- Returns the success status, a list of questions, number of total questions, current category.
+{
+    'success': success status (bool),
+    'questions': list of questions (collection.Iterable),
+    'total_questions': number of total questions (int),
+    'current_category': the current category (collection.Mappable | None)
+}
+```
+
+```
+POST '/api/v1/quizzes'
+- Gets a random question to play the quiz. This endpoint takes category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions.
+- Request Body:
+    - quiz_category: the quiz category (int) (optional, default=None)
+    - previous_questions: the answer (collection.Iterable) (required)
+- Returns the success status of the insert question action
+{
+    'success': success status (bool),
+    'question': the next random, not already taken question (collection.Mappable)
 }
 ```
 
