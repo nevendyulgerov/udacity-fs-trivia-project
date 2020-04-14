@@ -167,7 +167,7 @@ POST '/api/v1/quizzes'
 - Request Body:
     - quiz_category: the quiz category (int) (optional, default=None)
     - previous_questions: the answer (collection.Iterable) (required)
-- Returns the success status of the insert question action
+- Returns the success status of the insert question action and the next random, not already taken question.
 {
     'success': success status (bool),
     'question': the next random, not already taken question (collection.Mappable)
