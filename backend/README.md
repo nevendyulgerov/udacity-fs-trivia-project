@@ -68,17 +68,20 @@ One note before you delve into your tasks: for each endpoint you are expected to
 8. Create a POST endpoint to get questions to play the quiz. This endpoint should take category and previous question parameters and return a random questions within the given category, if provided, and that is not one of the previous questions. 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-REVIEW_COMMENT
+API Endpoints
 ```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code. 
-
 Endpoints
-GET '/categories'
-GET ...
-POST ...
-DELETE ...
+GET '/api/v1/categories'
+GET '/api/v1/questions?page={page}&per_page={per_page}'
+POST '/api/v1/questions/searches'
+POST '/api/v1/questions'
+DELETE '/api/v1/questions/{id}'
+GET '/api/v1/categories/{id}/questions'
+POST '/api/v1/quizzes'
+```
 
-GET '/categories'
+```
+GET '/api/v1/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
 - Returns: An object with a single key, categories, that contains a object of id: category_string key:value pairs. 
@@ -88,7 +91,21 @@ GET '/categories'
 '4' : "History",
 '5' : "Entertainment",
 '6' : "Sports"}
+```
 
+```
+GET '/api/v1/questions'
+- Fetches paginated questions. Default pagination is 10 questions per page.
+- Request Arguments:
+    - page: integer that determines the current page value
+    - per_page: integer that determines the current per page value
+- Returns a list of questions, number of total questions, current category, categories.
+{
+    'questions': list of questions (collection.Iterable),
+    'total_questions': number of total questions (int),
+    'categories': formatted_categories (collection.Mappable),
+    'current_category': None (collection.Mappable | None)
+}
 ```
 
 
